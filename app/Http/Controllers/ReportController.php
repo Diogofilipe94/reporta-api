@@ -89,7 +89,7 @@ class ReportController extends Controller
         $currentStatus = $report->status;
         $newStatus = Status::findOrFail($request->status_id);
 
-        $currentOrder = $statusOrder[$currentStatus->staftus];
+        $currentOrder = $statusOrder[$currentStatus->status];
         $newOrder = $statusOrder[$newStatus->status];
 
         if ($newOrder <= $currentOrder) {
