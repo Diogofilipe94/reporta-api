@@ -4,16 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use App\Models\ReportDetail;
-use App\Http\Requests\StoreReportDetailRequest;
 use Illuminate\Http\Request;
 
 class ReportDetailController extends Controller
 {
-    public function store(StoreReportDetailRequest $request, Report $report)
+    public function store(Request $request, $id)
     {
-        if($report->detail) {
+        $report = Report::where('id', $id)->first();
+
+        if (!$report) {
             return response()->json([
-                'error' => 'Report detail already exists'
+                'error' => 'Report not found'
+            ], 404);
+        }
+
+        $user = auth()->user();
+        if ($user->role->role !== 'admin' && $user->role->role !== 'curator') {
+            return response()->json([
+                'error' => 'Unauthorized. Only admin or curator can add details.'
+            ], 403);
+        }
+
+        if ($report->detail) {
+            return response()->json([
+                'error' => 'Report details already exist'
             ], 400);
         }
 
@@ -26,16 +40,24 @@ class ReportDetailController extends Controller
         $detail->save();
 
         return response()->json([
-            'message' => 'Report detail created successfully',
+            'message' => 'Report details created successfully',
             'detail' => $detail
         ], 201);
     }
 
-    public function show(Report $report)
+    public function show($id)
     {
-        $detail = $report->detail;
+        $report = Report::where('id', $id)->first();
 
-        if(!$detail) {
+        if (!$report) {
+            return response()->json([
+                'error' => 'Report not found'
+            ], 404);
+        }
+
+        $detail = ReportDetail::where('report_id', $report->id)->first();
+
+        if (!$detail) {
             return response()->json([
                 'error' => 'Report detail not found'
             ], 404);
@@ -44,24 +66,48 @@ class ReportDetailController extends Controller
         return response()->json($detail);
     }
 
-    public function update(StoreReportDetailRequest $request, Report $report)
+    public function update(Request $request, $id)
     {
-        $detail = $report->detail;
+        $report = Report::where('id', $id)->first();
 
-        if(!$detail) {
+        if (!$report) {
+            return response()->json([
+                'error' => 'Report not found'
+            ], 404);
+        }
+
+        $user = auth()->user();
+        if ($user->role->role !== 'admin' && $user->role->role !== 'curator') {
+            return response()->json([
+                'error' => 'Unauthorized. Only admin or curator can update details.'
+            ], 403);
+        }
+
+        $detail = ReportDetail::where('report_id', $report->id)->first();
+
+        if (!$detail) {
             return response()->json([
                 'error' => 'Report detail not found'
             ], 404);
         }
 
-        $detail->technical_description = $request->technical_description;
-        $detail->priority = $request->priority;
-        $detail->resolution_notes = $request->resolution_notes;
-        $detail->estimated_cost = $request->estimated_cost;
+        if ($request->has('technical_description')) {
+            $detail->technical_description = $request->technical_description;
+        }
+        if ($request->has('priority')) {
+            $detail->priority = $request->priority;
+        }
+        if ($request->has('resolution_notes')) {
+            $detail->resolution_notes = $request->resolution_notes;
+        }
+        if ($request->has('estimated_cost')) {
+            $detail->estimated_cost = $request->estimated_cost;
+        }
+
         $detail->save();
 
         return response()->json([
-            'message' => 'Report detail updated successfully',
+            'message' => 'Report details updated successfully',
             'detail' => $detail
         ]);
     }

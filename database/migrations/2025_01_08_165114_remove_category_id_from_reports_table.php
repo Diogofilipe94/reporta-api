@@ -17,8 +17,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('reports', function (Blueprint $table) {
-            $table->unsignedBigInteger('category_id')->after('status_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->unsignedBigInteger('category_id')
+                ->after('status_id');
+
+            $table->foreign('category_id')
+                ->references('id'
+                )->on('categories');
         });
     }
 };

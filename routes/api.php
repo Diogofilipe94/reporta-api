@@ -17,16 +17,17 @@ Route::middleware(JwtMiddleware::class)->group(function () {
     // Reports - CRUD
     Route::get('reports', [ReportController::class, 'index']);
     Route::post('reports', [ReportController::class, 'store']);
-    Route::get('reports/{report}', [ReportController::class, 'show']);
-    Route::put('reports/{report}', [ReportController::class, 'update']);
-    Route::delete('reports/{report}', [ReportController::class, 'destroy']);
+    Route::get('reports/{id}', [ReportController::class, 'show']);
+    Route::put('reports/{id}', [ReportController::class, 'update']);
+    Route::delete('reports/{id}', [ReportController::class, 'destroy']);
 
     Route::get('categories', [CategoryController::class, 'index']);
 
-    Route::post('reports/{report}/details', [ReportDetailController::class, 'store']);
-    Route::get('reports/{report}/details', [ReportDetailController::class, 'show']);
-    Route::put('reports/{report}/details', [ReportDetailController::class, 'update']);
+    Route::post('reports/{id}/details', [ReportDetailController::class, 'store']);
+    Route::get('reports/{id}/details', [ReportDetailController::class, 'show']);
+    Route::patch('reports/{id}/details', [ReportDetailController::class, 'update']);
 
-    Route::put('reports/{report}/status', [ReportController::class, 'updateStatus']);
+    Route::patch('reports/{id}/status', [ReportController::class, 'updateStatus']);
+
     Route::get('user/reports', [ReportController::class, 'getUserOwnReports']);
 });

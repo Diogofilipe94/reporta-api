@@ -22,7 +22,6 @@ class RegisterRequest extends FormRequest
             'password' => 'required|string|min:8',
             'telephone' => 'required|regex:/^[0-9]{9}$/',
             'address_id' => 'required|exists:addresses,id',
-            'role_id' => 'required|exists:roles,id'
         ];
     }
 
