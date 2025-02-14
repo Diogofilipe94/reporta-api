@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ReportController;
@@ -10,7 +11,9 @@ use Illuminate\Support\Facades\Route;
 // Rotas de acesso públicas
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-
+Route::post('addresses', [AddressController::class, 'store']);
+Route::get('addresses/{id}', [AddressController::class, 'show']);
+Route::post('addresses/check', [AddressController::class, 'check']);
 
 // Rotas protegidas por JWT
 Route::middleware(JwtMiddleware::class)->group(function () {
