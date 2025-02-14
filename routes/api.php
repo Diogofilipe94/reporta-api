@@ -33,4 +33,5 @@ Route::middleware(JwtMiddleware::class)->group(function () {
     Route::patch('reports/{id}/status', [ReportController::class, 'updateStatus']);
 
     Route::get('user/reports', [ReportController::class, 'getUserOwnReports']);
+    Route::get('user', [AuthController::class, 'user']);
 });
