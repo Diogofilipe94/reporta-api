@@ -97,6 +97,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'upload_max_size' => 20 * 1024 * 1024,
+
     'key' => env('APP_KEY'),
 
     'previous_keys' => [

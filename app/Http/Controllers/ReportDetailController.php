@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReportDetailRequest;
 use App\Models\Report;
 use App\Models\ReportDetail;
-use Illuminate\Http\Request;
 
 class ReportDetailController extends Controller
 {
-    public function store(Request $request, $id)
+    public function store(StoreReportDetailRequest $request, $id)
     {
         $report = Report::where('id', $id)->first();
 
@@ -66,7 +66,7 @@ class ReportDetailController extends Controller
         return response()->json($detail);
     }
 
-    public function update(Request $request, $id)
+    public function update(StoreReportDetailRequest $request, $id)
     {
         $report = Report::where('id', $id)->first();
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReportDetailController;
 use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 // Rotas de acesso públicas
 Route::post('register', [AuthController::class, 'register']);
@@ -34,4 +35,6 @@ Route::middleware(JwtMiddleware::class)->group(function () {
 
     Route::get('user/reports', [ReportController::class, 'getUserOwnReports']);
     Route::get('user', [AuthController::class, 'user']);
+
+    Route::get('userdata/{id}', [UserController::class, 'index']);
 });

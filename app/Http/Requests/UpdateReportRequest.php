@@ -16,9 +16,10 @@ class UpdateReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'location' => 'sometimes|required|string|max:255|min:5',
+            'location' => 'sometimes|string|max:255|min:5',
             'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-            'category_id' => 'sometimes|required|exists:categories,id'
+            'category_id' => 'required|array',
+            'category_id.*' => 'exists:categories,id'
         ];
     }
 
@@ -27,8 +28,7 @@ class UpdateReportRequest extends FormRequest
         return [
             'location.required' => 'A localização é obrigatória',
             'location.min' => 'A localização deve ter pelo menos 5 caracteres',
-            'photo.mimes' => 'A imagem deve ser do tipo: jpeg, jpg, png',
-            'photo.max' => 'A imagem não pode ter mais que 2MB',
+            'photo' => 'image|mimes:jpeg,png,jpg|max:20480',
             'category_id.required' => 'A categoria é obrigatória',
             'category_id.exists' => 'A categoria selecionada não existe'
         ];

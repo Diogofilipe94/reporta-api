@@ -13,6 +13,13 @@ class ReportController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        if ($user->role->role !== 'admin' && $user->role->role !== 'curator') {
+            return response()->json([
+                'error' => 'Unauthorized. Only admin or curator can view all reports.'
+            ], 403);
+        }
+
         $reports = Report::with(['status', 'categories'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -47,6 +54,7 @@ class ReportController extends Controller
 
     public function show($id)
     {
+        $user = auth()->user();
         $report = Report::where('id', $id)
             ->with(['user', 'status', 'categories'])
             ->first();
@@ -55,6 +63,14 @@ class ReportController extends Controller
             return response()->json([
                 'error' => 'Report not found'
             ], 404);
+        }
+
+        if ($user->role->role !== 'admin' &&
+            $user->role->role !== 'curator' &&
+            $report->user_id !== $user->id) {
+            return response()->json([
+                'error' => 'Unauthorized to view this report'
+            ], 403);
         }
 
         return response()->json($report);
@@ -71,9 +87,9 @@ class ReportController extends Controller
         }
 
         $user = auth()->user();
-        if($report->user_id !== $user->id &&
-            $user->role->role !== 'admin' &&
-            $user->role->role !== 'curator') {
+        if ($user->role->role !== 'admin' &&
+            $user->role->role !== 'curator' &&
+            $report->user_id !== $user->id) {
             return response()->json([
                 'error' => 'Unauthorized to update this report'
             ], 403);
@@ -104,6 +120,13 @@ class ReportController extends Controller
 
     public function updateStatus(UpdateReportStatusRequest $request, $id)
     {
+        $user = auth()->user();
+        if ($user->role->role !== 'admin' && $user->role->role !== 'curator') {
+            return response()->json([
+                'error' => 'Unauthorized. Only admin or curator can update status.'
+            ], 403);
+        }
+
         $report = Report::where('id', $id)
             ->with('status')
             ->first();
@@ -151,20 +174,19 @@ class ReportController extends Controller
 
     public function destroy($id)
     {
+        $user = auth()->user();
+        if ($user->role->role !== 'admin' && $user->role->role !== 'curator') {
+            return response()->json([
+                'error' => 'Unauthorized. Only admin or curator can delete reports.'
+            ], 403);
+        }
+
         $report = Report::where('id', $id)->first();
 
         if (!$report) {
             return response()->json([
                 'error' => 'Report not found'
             ], 404);
-        }
-
-        $user = auth()->user();
-        if($user->role->role !== 'admin' &&
-            $user->role->role !== 'curator') {
-            return response()->json([
-                'error' => 'Unauthorized. Only admin or curator can delete reports.'
-            ], 403);
         }
 
         if ($report->photo) {

@@ -35,6 +35,7 @@ class StoreReportDetailRequest extends FormRequest
             'estimated_cost.min' => 'O custo estimado não pode ser negativo'
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(

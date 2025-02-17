@@ -50,7 +50,6 @@ class AddressController extends Controller
         return response()->json($address);
     }
 
-
     public function check(StoreAddressRequest $request)
     {
         $address = Address::where('street', $request->street)
